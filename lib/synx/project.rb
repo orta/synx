@@ -10,7 +10,7 @@ module Synx
     DEFAULT_EXCLUSIONS = %W(/Libraries /Frameworks /Products /Pods)
     private_constant :DEFAULT_EXCLUSIONS
 
-    attr_accessor :delayed_groups_set_path, :group_exclusions, :prune
+    attr_accessor :delayed_groups_set_path, :group_exclusions, :prune, :spaces_to_underscore
 
     def sync(options={})
       set_options(options)
@@ -40,6 +40,7 @@ module Synx
 
     def set_options(options)
       self.prune = options[:prune]
+      self.spaces_to_underscore = options[:spaces_to_underscores]
 
       if options[:no_default_exclusions]
         self.group_exclusions = []
@@ -67,7 +68,7 @@ module Synx
     end
 
     def work_root_pathname
-      if @work_root_pathname 
+      if @work_root_pathname
         @work_root_pathname
       else
         @work_root_pathname = Pathname(File.join(SYNXRONIZE_DIR, root_pathname.basename.to_s))
@@ -111,17 +112,14 @@ module Synx
 
     def has_object_for_pathname?(pathname)
       @unmodified_project ||= Synx::Project.open(path)
-      @unmodified_project.objects.any? do |o| 
+      @unmodified_project.objects.any? do |o|
         begin
-          o.real_path.cleanpath == pathname.cleanpath 
-        rescue 
-          false 
+          o.real_path.cleanpath == pathname.cleanpath
+        rescue
+          false
         end
       end
     end
 
   end
 end
-
-
-
