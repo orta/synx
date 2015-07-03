@@ -25,7 +25,8 @@ module Xcodeproj
             # Localized container, has no path of its own.
             @work_pathname ||= parent.work_pathname
           else
-            @work_pathname ||= parent.work_pathname + display_name
+            name = project.spaces_to_underscores ? display_name.tr(" ", "_") : display_name
+            @work_pathname ||= parent.work_pathname + name
           end
         end
 

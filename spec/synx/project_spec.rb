@@ -88,6 +88,10 @@ describe Synx::Project do
       YAML::load_file(File.expand_path("../expected_file_structure.yml", __FILE__))
     end
 
+    def expected_no_spaces_file_structure
+      YAML::load_file(File.expand_path("../expected_no_spaces_file_structure.yml", __FILE__))
+    end
+
     def expected_group_structure
       YAML::load_file(File.expand_path("../expected_group_structure.yml", __FILE__))
     end
@@ -162,6 +166,20 @@ describe Synx::Project do
       end
     end
 
+    describe "with spaces to underscores enabled" do
+
+      before(:all) do
+        DUMMY_SYNX_TEST_PROJECT.sync(:spaces_to_underscores => true, :output => StringIO.new)
+      end
+
+      it "should replace file paths correctly" do
+        verify_file_structure(Pathname(DUMMY_SYNX_TEST_PROJECT_PATH).parent, expected_no_spaces_file_structure())
+      end
+
+      it "should not have modified the Xcode group structure, except for fixing double file references" do
+        verify_group_structure(DUMMY_SYNX_TEST_PROJECT.main_group, expected_group_structure())
+      end
+    end
   end
 
   describe "group_exclusions=" do

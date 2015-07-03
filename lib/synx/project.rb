@@ -10,7 +10,7 @@ module Synx
     DEFAULT_EXCLUSIONS = %W(/Libraries /Frameworks /Products /Pods)
     private_constant :DEFAULT_EXCLUSIONS
 
-    attr_accessor :delayed_groups_set_path, :group_exclusions, :prune, :spaces_to_underscore
+    attr_accessor :delayed_groups_set_path, :group_exclusions, :prune, :spaces_to_underscores
 
     def sync(options={})
       set_options(options)
@@ -40,7 +40,7 @@ module Synx
 
     def set_options(options)
       self.prune = options[:prune]
-      self.spaces_to_underscore = options[:spaces_to_underscores]
+      self.spaces_to_underscores = options[:spaces_to_underscores]
 
       if options[:no_default_exclusions]
         self.group_exclusions = []
@@ -82,10 +82,17 @@ module Synx
     # We build up the new project structure in a temporary workspace, so convert a file path in the project space to
     # one in the temp workspace.
     def pathname_to_work_pathname(pathname)
-      work_root_pathname + pathname.relative_path_from(root_pathname)
+      if self.spaces_to_underscores
+        new_path = work_root_pathname + pathname.relative_path_from(root_pathname)
+        puts "p to w -> #{Pathname.new( new_path.to_s.tr(" ", "_") )}"
+        Pathname.new( new_path.to_s.tr(" ", "_") )
+      else
+        work_root_pathname + pathname.relative_path_from(root_pathname)
+      end
     end
 
     def work_pathname_to_pathname(work_pathname)
+      puts "w to p -> #{root_pathname + work_pathname.relative_path_from(work_root_pathname)}"
       root_pathname + work_pathname.relative_path_from(work_root_pathname)
     end
 

@@ -86,6 +86,7 @@ module Xcodeproj
             return
           elsif !project.prune || !is_file_to_prune
             destination = project.pathname_to_work_pathname(file_pathname.parent.realpath)
+            puts "moving #{file_pathname} to #{destination}"
             destination.mkpath
             FileUtils.mv(file_pathname.realpath, destination)
             if is_file_to_prune
